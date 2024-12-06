@@ -35,12 +35,20 @@ int main(int argc, char *argv[]) {
 
     char line[256];
     while (fgets(line, sizeof(line), ops_file)) {
+        // Remove trailing newline character, if any
+        line[strcspn(line, "\r\n")] = '\0';
+
         char *op = strtok(line, ":");
+        if (!op) continue; // Skip empty lines
+
         if (strcmp(op, "display") == 0) {
             printf("Operation not yet implemented: display\n");
         } else if (strcmp(op, "population-total") == 0) {
             long long total_population = 0;
             for (int i = 0; i < record_count; i++) {
+                // Debug: Print each record's population
+                printf("Record %d population: %lld\n", i, records[i].population_2014_population);
+
                 total_population += records[i].population_2014_population;
             }
             printf("2014 population: %lld\n", total_population);

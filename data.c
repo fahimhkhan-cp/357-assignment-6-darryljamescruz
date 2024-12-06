@@ -12,6 +12,24 @@ void trim_whitespace(char *str) {
     }
 }
 
+// Helper to parse long long values safely
+long long parse_long_long(char *token) {
+    if (!token || strlen(token) == 0) {
+        return 0; // Default value for missing fields
+    }
+    trim_whitespace(token);
+    return atoll(token);
+}
+
+// Helper to parse double values safely
+double parse_double(char *token) {
+    if (!token || strlen(token) == 0) {
+        return 0.0; // Default value for missing fields
+    }
+    trim_whitespace(token);
+    return atof(token);
+}
+
 // Parse a single CSV line
 int parse_line(char *line, Demographic *info) {
     char buffer[4000];
@@ -27,57 +45,57 @@ int parse_line(char *line, Demographic *info) {
     trim_whitespace(token);
     strcpy(info->state, token);
 
-    // Parse remaining fields (convert to appropriate types)
-    info->age_percent_65_and_older = atof(strtok(NULL, ","));
-    info->age_percent_under_18_years = atof(strtok(NULL, ","));
-    info->age_percent_under_5_years = atof(strtok(NULL, ","));
-    info->education_bachelors_degree_or_higher = atof(strtok(NULL, ","));
-    info->education_high_school_or_higher = atof(strtok(NULL, ","));
-    info->employment_nonemployer_establishments = atoll(strtok(NULL, ","));
-    info->employment_private_non_farm_employment = atoll(strtok(NULL, ","));
-    info->employment_private_non_farm_employment_change = atof(strtok(NULL, ","));
-    info->employment_private_non_farm_establishments = atoll(strtok(NULL, ","));
-    info->ethnicities_american_indian_and_alaska_native_alone = atof(strtok(NULL, ","));
-    info->ethnicities_asian_alone = atof(strtok(NULL, ","));
-    info->ethnicities_black_alone = atof(strtok(NULL, ","));
-    info->ethnicities_hispanic_or_latino = atof(strtok(NULL, ","));
-    info->ethnicities_native_hawaiian_and_other_pacific_islander_alone = atof(strtok(NULL, ","));
-    info->ethnicities_two_or_more_races = atof(strtok(NULL, ","));
-    info->ethnicities_white_alone = atof(strtok(NULL, ","));
-    info->ethnicities_white_alone_not_hispanic_or_latino = atof(strtok(NULL, ","));
-    info->housing_homeownership_rate = atof(strtok(NULL, ","));
-    info->housing_households = atoll(strtok(NULL, ","));
-    info->housing_housing_units = atoll(strtok(NULL, ","));
-    info->housing_median_value_of_owner_occupied_units = atoll(strtok(NULL, ","));
-    info->housing_persons_per_household = atof(strtok(NULL, ","));
-    info->housing_units_in_multi_unit_structures = atof(strtok(NULL, ","));
-    info->income_median_household_income = atoll(strtok(NULL, ","));
-    info->income_per_capita_income = atoll(strtok(NULL, ","));
-    info->income_persons_below_poverty_level = atof(strtok(NULL, ","));
-    info->miscellaneous_building_permits = atoll(strtok(NULL, ","));
-    info->miscellaneous_foreign_born = atof(strtok(NULL, ","));
-    info->miscellaneous_land_area = atof(strtok(NULL, ","));
-    info->miscellaneous_language_other_than_english_at_home = atof(strtok(NULL, ","));
-    info->miscellaneous_living_in_same_house_1_year = atof(strtok(NULL, ","));
-    info->miscellaneous_manufacturers_shipments = atoll(strtok(NULL, ","));
-    info->miscellaneous_mean_travel_time_to_work = atof(strtok(NULL, ","));
-    info->miscellaneous_percent_female = atof(strtok(NULL, ","));
-    info->miscellaneous_veterans = atoll(strtok(NULL, ","));
-    info->population_2010_population = atoll(strtok(NULL, ","));
-    info->population_2014_population = atoll(strtok(NULL, ","));
-    info->population_population_percent_change = atof(strtok(NULL, ","));
-    info->population_population_per_square_mile = atof(strtok(NULL, ","));
-    info->sales_accommodation_and_food_services_sales = atoll(strtok(NULL, ","));
-    info->sales_merchant_wholesaler_sales = atoll(strtok(NULL, ","));
-    info->sales_retail_sales = atoll(strtok(NULL, ","));
-    info->sales_retail_sales_per_capita = atoll(strtok(NULL, ","));
-    info->employment_firms_american_indian_owned = atoll(strtok(NULL, ","));
-    info->employment_firms_asian_owned = atoll(strtok(NULL, ","));
-    info->employment_firms_black_owned = atoll(strtok(NULL, ","));
-    info->employment_firms_hispanic_owned = atoll(strtok(NULL, ","));
-    info->employment_firms_native_hawaiian_owned = atoll(strtok(NULL, ","));
-    info->employment_firms_total = atoll(strtok(NULL, ","));
-    info->employment_firms_women_owned = atoll(strtok(NULL, ","));
+    // Parse all fields using helper functions
+    info->age_percent_65_and_older = parse_double(strtok(NULL, ","));
+    info->age_percent_under_18_years = parse_double(strtok(NULL, ","));
+    info->age_percent_under_5_years = parse_double(strtok(NULL, ","));
+    info->education_bachelors_degree_or_higher = parse_double(strtok(NULL, ","));
+    info->education_high_school_or_higher = parse_double(strtok(NULL, ","));
+    info->employment_nonemployer_establishments = parse_long_long(strtok(NULL, ","));
+    info->employment_private_non_farm_employment = parse_long_long(strtok(NULL, ","));
+    info->employment_private_non_farm_employment_change = parse_double(strtok(NULL, ","));
+    info->employment_private_non_farm_establishments = parse_long_long(strtok(NULL, ","));
+    info->ethnicities_american_indian_and_alaska_native_alone = parse_double(strtok(NULL, ","));
+    info->ethnicities_asian_alone = parse_double(strtok(NULL, ","));
+    info->ethnicities_black_alone = parse_double(strtok(NULL, ","));
+    info->ethnicities_hispanic_or_latino = parse_double(strtok(NULL, ","));
+    info->ethnicities_native_hawaiian_and_other_pacific_islander_alone = parse_double(strtok(NULL, ","));
+    info->ethnicities_two_or_more_races = parse_double(strtok(NULL, ","));
+    info->ethnicities_white_alone = parse_double(strtok(NULL, ","));
+    info->ethnicities_white_alone_not_hispanic_or_latino = parse_double(strtok(NULL, ","));
+    info->housing_homeownership_rate = parse_double(strtok(NULL, ","));
+    info->housing_households = parse_long_long(strtok(NULL, ","));
+    info->housing_housing_units = parse_long_long(strtok(NULL, ","));
+    info->housing_median_value_of_owner_occupied_units = parse_long_long(strtok(NULL, ","));
+    info->housing_persons_per_household = parse_double(strtok(NULL, ","));
+    info->housing_units_in_multi_unit_structures = parse_double(strtok(NULL, ","));
+    info->income_median_household_income = parse_long_long(strtok(NULL, ","));
+    info->income_per_capita_income = parse_long_long(strtok(NULL, ","));
+    info->income_persons_below_poverty_level = parse_double(strtok(NULL, ","));
+    info->miscellaneous_building_permits = parse_long_long(strtok(NULL, ","));
+    info->miscellaneous_foreign_born = parse_double(strtok(NULL, ","));
+    info->miscellaneous_land_area = parse_double(strtok(NULL, ","));
+    info->miscellaneous_language_other_than_english_at_home = parse_double(strtok(NULL, ","));
+    info->miscellaneous_living_in_same_house_1_year = parse_double(strtok(NULL, ","));
+    info->miscellaneous_manufacturers_shipments = parse_long_long(strtok(NULL, ","));
+    info->miscellaneous_mean_travel_time_to_work = parse_double(strtok(NULL, ","));
+    info->miscellaneous_percent_female = parse_double(strtok(NULL, ","));
+    info->miscellaneous_veterans = parse_long_long(strtok(NULL, ","));
+    info->population_2010_population = parse_long_long(strtok(NULL, ","));
+    info->population_2014_population = parse_long_long(strtok(NULL, ","));
+    info->population_population_percent_change = parse_double(strtok(NULL, ","));
+    info->population_population_per_square_mile = parse_double(strtok(NULL, ","));
+    info->sales_accommodation_and_food_services_sales = parse_long_long(strtok(NULL, ","));
+    info->sales_merchant_wholesaler_sales = parse_long_long(strtok(NULL, ","));
+    info->sales_retail_sales = parse_long_long(strtok(NULL, ","));
+    info->sales_retail_sales_per_capita = parse_long_long(strtok(NULL, ","));
+    info->employment_firms_american_indian_owned = parse_long_long(strtok(NULL, ","));
+    info->employment_firms_asian_owned = parse_long_long(strtok(NULL, ","));
+    info->employment_firms_black_owned = parse_long_long(strtok(NULL, ","));
+    info->employment_firms_hispanic_owned = parse_long_long(strtok(NULL, ","));
+    info->employment_firms_native_hawaiian_owned = parse_long_long(strtok(NULL, ","));
+    info->employment_firms_total = parse_long_long(strtok(NULL, ","));
+    info->employment_firms_women_owned = parse_long_long(strtok(NULL, ","));
 
     return 0;
 }
