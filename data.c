@@ -145,16 +145,21 @@ void filter_state(Demographic *records, int *record_count, const char *state) {
 
 void filter(Demographic *records, int *count, const char *field, const char *comparison, float value) {
     int new_count = 0;
+
     for (int i = 0; i < *count; i++) {
         float field_value = 0.0;
 
+        // Map field names to struct members
         if (strcmp(field, "Education.High School or Higher") == 0) {
             field_value = records[i].education_high_school_or_higher;
+        } else if (strcmp(field, "Education.Bachelor's Degree or Higher") == 0) {
+            field_value = records[i].education_bachelors_degree_or_higher;
         } else {
             printf("Unknown field: %s\n", field);
             continue;
         }
 
+        // Apply the comparison
         int include = 0;
         if (strcmp(comparison, "le") == 0 && field_value <= value) {
             include = 1;
@@ -162,12 +167,15 @@ void filter(Demographic *records, int *count, const char *field, const char *com
             include = 1;
         }
 
+        // Include the record if it matches the criteria
         if (include) {
             records[new_count++] = records[i];
         }
     }
 
+    // Update the count of filtered records
     *count = new_count;
+
     printf("Filter: %s, %s, %.2f (%d entries)\n", field, comparison, value, *count);
 }
 
