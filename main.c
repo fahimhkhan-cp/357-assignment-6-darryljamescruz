@@ -47,14 +47,50 @@ int main(int argc, char *argv[]) {
             long long total_population = 0;
             for (int i = 0; i < record_count; i++) {
                 // Debug: Print each record's population
-                printf("Record %d population: %lld\n", i, records[i].population_2014_population);
+                //printf("Record %d population: %lld\n", i, records[i].population_2014_population);
 
                 total_population += records[i].population_2014_population;
             }
             printf("2014 population: %lld\n", total_population);
+        } else if (strcmp(op, "population") == 0) {
+            char *field = strtok(NULL, ":");
+            if (!field) {
+                printf("Invalid operation: Missing field for 'population'\n");
+                continue;
+            }
+
+            double total = 0.0;
+            for (int i = 0; i < record_count; i++) {
+                if (strcmp(field, "Education.Bachelor's Degree or Higher") == 0) {
+                    total += records[i].education_bachelors_degree_or_higher * records[i].population_2014_population / 100.0;
+                } else if (strcmp(field, "Education.High School or Higher") == 0) {
+                    total += records[i].education_high_school_or_higher * records[i].population_2014_population / 100.0;
+                } else if (strcmp(field, "Ethnicities.American Indian and Alaska Native Alone") == 0) {
+                    total += records[i].ethnicities_american_indian_and_alaska_native_alone * records[i].population_2014_population / 100.0;
+                } else if (strcmp(field, "Ethnicities.Asian Alone") == 0) {
+                    total += records[i].ethnicities_asian_alone * records[i].population_2014_population / 100.0;
+                } else if (strcmp(field, "Ethnicities.Black Alone") == 0) {
+                    total += records[i].ethnicities_black_alone * records[i].population_2014_population / 100.0;
+                } else if (strcmp(field, "Ethnicities.Hispanic or Latino") == 0) {
+                    total += records[i].ethnicities_hispanic_or_latino * records[i].population_2014_population / 100.0;
+                } else if (strcmp(field, "Ethnicities.Native Hawaiian and Other Pacific Islander Alone") == 0) {
+                    total += records[i].ethnicities_native_hawaiian_and_other_pacific_islander_alone * records[i].population_2014_population / 100.0;
+                } else if (strcmp(field, "Ethnicities.Two or More Races") == 0) {
+                    total += records[i].ethnicities_two_or_more_races * records[i].population_2014_population / 100.0;
+                } else if (strcmp(field, "Ethnicities.White Alone") == 0) {
+                    total += records[i].ethnicities_white_alone * records[i].population_2014_population / 100.0;
+                } else if (strcmp(field, "Ethnicities.White Alone, not Hispanic or Latino") == 0) {
+                    total += records[i].ethnicities_white_alone_not_hispanic_or_latino * records[i].population_2014_population / 100.0;
+                } else if (strcmp(field, "Income.Persons Below Poverty Level") == 0) {
+                    total += records[i].income_persons_below_poverty_level * records[i].population_2014_population / 100.0;
+                } else {
+                    printf("Unknown field: %s\n", field);
+                }
+            }
+            printf("2014 %s population: %.6f\n", field, total);
         } else {
             printf("Unknown operation: %s\n", op);
-        }
+        } 
     }
 
     fclose(ops_file);
