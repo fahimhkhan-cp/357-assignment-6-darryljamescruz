@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
         if (!op) continue; // Skip empty lines
 
         if (strcmp(op, "display") == 0) {
-            printf("Operation not yet implemented: display\n");
+            display(records, record_count);
         } else if (strcmp(op, "population-total") == 0) {
             long long total_population = 0;
             for (int i = 0; i < record_count; i++) {
@@ -142,6 +142,16 @@ int main(int argc, char *argv[]) {
                 continue;
             }
             filter_state(records, &record_count, state);
+        } else if (strcmp(op, "filter") == 0) {
+            char *field = strtok(NULL, ":");
+            char *comparison = strtok(NULL, ":");
+            char *value_str = strtok(NULL, ":");
+            if (!field || !comparison || !value_str) {
+                printf("Invalid filter operation: Missing arguments\n");
+                continue;
+            }
+            float value = atof(value_str); // Convert value to a float
+            filter(records, &record_count, field, comparison, value);
         } else {
             printf("Unknown operation: %s\n", op);
         } 

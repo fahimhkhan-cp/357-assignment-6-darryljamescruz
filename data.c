@@ -142,3 +142,54 @@ void filter_state(Demographic *records, int *record_count, const char *state) {
     *record_count = new_count;
     printf("Filter: state == %s (%d entries)\n", state, new_count);
 }
+
+void filter(Demographic *records, int *count, const char *field, const char *comparison, float value) {
+    int new_count = 0;
+    for (int i = 0; i < *count; i++) {
+        float field_value = 0.0;
+
+        if (strcmp(field, "Education.High School or Higher") == 0) {
+            field_value = records[i].education_high_school_or_higher;
+        } else {
+            printf("Unknown field: %s\n", field);
+            continue;
+        }
+
+        int include = 0;
+        if (strcmp(comparison, "le") == 0 && field_value <= value) {
+            include = 1;
+        } else if (strcmp(comparison, "ge") == 0 && field_value >= value) {
+            include = 1;
+        }
+
+        if (include) {
+            records[new_count++] = records[i];
+        }
+    }
+
+    *count = new_count;
+    printf("Filter: %s, %s, %.2f (%d entries)\n", field, comparison, value, *count);
+}
+
+void display(const Demographic *records, int count) {
+    for (int i = 0; i < count; i++) {
+        printf("%s, %s\n", records[i].county, records[i].state);
+        printf("\tPopulation: %lld\n", records[i].population_2014_population);
+        printf("\tEducation:\n");
+        printf("\t\t>= High School: %.2f%%\n", records[i].education_high_school_or_higher);
+        printf("\t\t>= Bachelor's Degree: %.2f%%\n", records[i].education_bachelors_degree_or_higher);
+        printf("\tEthnicities:\n");
+        printf("\t\tAmerican Indian and Alaska Native: %.2f%%\n", records[i].ethnicities_american_indian_and_alaska_native_alone);
+        printf("\t\tAsian: %.2f%%\n", records[i].ethnicities_asian_alone);
+        printf("\t\tBlack: %.2f%%\n", records[i].ethnicities_black_alone);
+        printf("\t\tHispanic or Latino: %.2f%%\n", records[i].ethnicities_hispanic_or_latino);
+        printf("\t\tNative Hawaiian and Other Pacific Islander: %.2f%%\n", records[i].ethnicities_native_hawaiian_and_other_pacific_islander_alone);
+        printf("\t\tTwo or More Races: %.2f%%\n", records[i].ethnicities_two_or_more_races);
+        printf("\t\tWhite Alone: %.2f%%\n", records[i].ethnicities_white_alone);
+        printf("\t\tWhite Alone, Not Hispanic or Latino: %.2f%%\n", records[i].ethnicities_white_alone_not_hispanic_or_latino);
+        printf("\tIncome:\n");
+        printf("\t\tMedian Household Income: %lld\n", records[i].income_median_household_income);
+        printf("\t\tPer Capita Income: %lld\n", records[i].income_per_capita_income);
+        printf("\t\tBelow Poverty Level: %.2f%%\n", records[i].income_persons_below_poverty_level);
+    }
+}
