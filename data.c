@@ -1,51 +1,81 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+#include <errno.h>
 #include "data.h"
 
-// Trim whitespace and remove enclosing quotes
+#include <string.h>
+#include <ctype.h>
+#include <errno.h>
+
+// Helper function to remove leading/trailing whitespace
 void trim_whitespace(char *str) {
-    int len = strlen(str);
+    char *end;
+
+    // Trim leading spaces
+    while (isspace((unsigned char)*str)) str++;
+
+    // Trim trailing spaces
+    end = str + strlen(str) - 1;
+    while (end > str && isspace((unsigned char)*end)) end--;
+    end[1] = '\0';
+}
+
+// Helper function to remove leading and trailing quotes from strings
+void strip_quotes(char *str) {
+    size_t len = strlen(str);
     if (len > 1 && str[0] == '"' && str[len - 1] == '"') {
-        memmove(str, str + 1, len - 2);
-        str[len - 2] = '\0';
+        memmove(str, str + 1, len - 2);  // Remove the first and last characters
+        str[len - 2] = '\0';  // Null-terminate the string
     }
 }
 
-// Helper to parse long long values safely
-long long parse_long_long(char *token) {
-    if (!token || strlen(token) == 0) {
-        return 0; // Default value for missing fields
+// Parse a long long number from a string
+long long parse_long_long(char *str) {
+    strip_quotes(str); // Clean the string before parsing
+    char *endptr;
+    long long value = strtoll(str, &endptr, 10);
+    if (*endptr != '\0') {
+        fprintf(stderr, "Error parsing long long: '%s'\n", str);
+        return 0;  // You can return an error code if needed
     }
-    trim_whitespace(token);
-    return atoll(token);
+    return value;
 }
 
-// Helper to parse double values safely
-double parse_double(char *token) {
-    if (!token || strlen(token) == 0) {
-        return 0.0; // Default value for missing fields
+// Parse a double number from a string
+double parse_double(char *str) {
+    strip_quotes(str); // Clean the string before parsing
+    char *endptr;
+    double value = strtod(str, &endptr);
+    if (*endptr != '\0') {
+        fprintf(stderr, "Error parsing double: '%s'\n", str);
+        return 0.0;  // You can return an error code if needed
     }
-    trim_whitespace(token);
-    return atof(token);
+    return value;
 }
 
-// Parse a single CSV line
+// Parse a single line of CSV
 int parse_line(char *line, Demographic *info) {
     char buffer[4000];
-    strcpy(buffer, line);
+    strncpy(buffer, line, sizeof(buffer) - 1);
+    buffer[sizeof(buffer) - 1] = '\0';
 
     char *token = strtok(buffer, ",");
     if (!token) return -1;
     trim_whitespace(token);
-    strcpy(info->county, token);
+    strip_quotes(token);  // Strip quotes from the token
+    strncpy(info->county, token, sizeof(info->county) - 1);
+    info->county[sizeof(info->county) - 1] = '\0';
 
     token = strtok(NULL, ",");
     if (!token) return -1;
     trim_whitespace(token);
-    strcpy(info->state, token);
+    strip_quotes(token);  // Strip quotes from the token
+    strncpy(info->state, token, sizeof(info->state) - 1);
+    info->state[sizeof(info->state) - 1] = '\0';
 
-    // Parse all fields using helper functions
+    // Parse numeric fields
     info->age_percent_65_and_older = parse_double(strtok(NULL, ","));
     info->age_percent_under_18_years = parse_double(strtok(NULL, ","));
     info->age_percent_under_5_years = parse_double(strtok(NULL, ","));
@@ -102,32 +132,36 @@ int parse_line(char *line, Demographic *info) {
 
 // Load demographics from CSV file
 int load_demographics(const char *filename, Demographic *records, int max_records) {
-
     FILE *file = fopen(filename, "r");
     if (!file) {
         perror("Error opening file");
         return -1;
     }
 
-    char line[4000];
+    char *line = malloc(4000);
+    if (!line) {
+        perror("Error allocating memory");
+        fclose(file);
+        return -1;
+    }
+
     int count = 0;
+    fgets(line, 4000, file); // Skip header
 
-    // Skip the header
-    fgets(line, sizeof(line), file);
-
-    while (fgets(line, sizeof(line), file)) {
+    while (fgets(line, 4000, file)) {
         if (count >= max_records) {
-            fprintf(stderr, "Warning: Max records reached. Skipping line.\n");
+            fprintf(stderr, "Max records reached. Skipping line.\n");
             continue;
         }
 
         if (parse_line(line, &records[count]) == 0) {
             count++;
         } else {
-            fprintf(stderr, "Warning: Malformed line. Skipping...\n");
+            fprintf(stderr, "Malformed line. Skipping...\n");
         }
     }
 
+    free(line);
     fclose(file);
     return count;
 }

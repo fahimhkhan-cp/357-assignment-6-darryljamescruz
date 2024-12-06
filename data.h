@@ -5,8 +5,8 @@
 
 // struct store all the expected header info from county_demographics
 typedef struct {
-    char county[100];
-    char state[3];
+    char county[256];
+    char state[256];
     float age_percent_65_and_older;
     float age_percent_under_18_years;
     float age_percent_under_5_years;
