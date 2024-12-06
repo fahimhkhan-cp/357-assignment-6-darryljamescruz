@@ -61,5 +61,6 @@ typedef struct {
 
 int parse_line(char *line, Demographic *info);
 int load_demographics(const char *filename, Demographic *records, int max_records);
+void filter_state(Demographic *records, int *record_count, const char *state);
 
 #endif

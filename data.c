@@ -102,6 +102,7 @@ int parse_line(char *line, Demographic *info) {
 
 // Load demographics from CSV file
 int load_demographics(const char *filename, Demographic *records, int max_records) {
+
     FILE *file = fopen(filename, "r");
     if (!file) {
         perror("Error opening file");
@@ -129,4 +130,15 @@ int load_demographics(const char *filename, Demographic *records, int max_record
 
     fclose(file);
     return count;
+}
+
+void filter_state(Demographic *records, int *record_count, const char *state) {
+    int new_count = 0;
+    for (int i = 0; i < *record_count; i++) {
+        if (strcmp(records[i].state, state) == 0) {
+            records[new_count++] = records[i];
+        }
+    }
+    *record_count = new_count;
+    printf("Filter: state == %s (%d entries)\n", state, new_count);
 }
