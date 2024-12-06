@@ -154,6 +154,22 @@ void filter(Demographic *records, int *count, const char *field, const char *com
             field_value = records[i].education_high_school_or_higher;
         } else if (strcmp(field, "Education.Bachelor's Degree or Higher") == 0) {
             field_value = records[i].education_bachelors_degree_or_higher;
+        } else if (strcmp(field, "Ethnicities.American Indian and Alaska Native Alone") == 0) {
+            field_value = records[i].ethnicities_american_indian_and_alaska_native_alone;
+        } else if (strcmp(field, "Ethnicities.Asian Alone") == 0) {
+            field_value = records[i].ethnicities_asian_alone;
+        } else if (strcmp(field, "Ethnicities.Black Alone") == 0) {
+            field_value = records[i].ethnicities_black_alone;
+        } else if (strcmp(field, "Ethnicities.Hispanic or Latino") == 0) {
+            field_value = records[i].ethnicities_hispanic_or_latino;
+        } else if (strcmp(field, "Ethnicities.Native Hawaiian and Other Pacific Islander Alone") == 0) {
+            field_value = records[i].ethnicities_native_hawaiian_and_other_pacific_islander_alone;
+        } else if (strcmp(field, "Ethnicities.Two or More Races") == 0) {
+            field_value = records[i].ethnicities_two_or_more_races;
+        } else if (strcmp(field, "Ethnicities.White Alone") == 0) {
+            field_value = records[i].ethnicities_white_alone;
+        } else if (strcmp(field, "Ethnicities.White Alone, not Hispanic or Latino") == 0) {
+            field_value = records[i].ethnicities_white_alone_not_hispanic_or_latino;
         } else {
             printf("Unknown field: %s\n", field);
             continue;
