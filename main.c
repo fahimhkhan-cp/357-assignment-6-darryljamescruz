@@ -38,17 +38,16 @@ int main(int argc, char *argv[]) {
         // Remove trailing newline character, if any
         line[strcspn(line, "\r\n")] = '\0';
 
+        if (strlen(line) == 0) continue; // Skip empty lines
+
         char *op = strtok(line, ":");
-        if (!op) continue; // Skip empty lines
+        if (!op) continue; // Skip malformed operations
 
         if (strcmp(op, "display") == 0) {
             display(records, record_count);
         } else if (strcmp(op, "population-total") == 0) {
             long long total_population = 0;
             for (int i = 0; i < record_count; i++) {
-                // Debug: Print each record's population
-                //printf("Record %d population: %lld\n", i, records[i].population_2014_population);
-
                 total_population += records[i].population_2014_population;
             }
             printf("2014 population: %lld\n", total_population);
@@ -88,7 +87,6 @@ int main(int argc, char *argv[]) {
                 }
             }
             printf("2014 %s population: %.6f\n", field, total);
-        
         } else if (strcmp(op, "percent") == 0) {
             char *field = strtok(NULL, ":");
             if (!field) {
@@ -154,7 +152,7 @@ int main(int argc, char *argv[]) {
             filter(records, &record_count, field, comparison, value);
         } else {
             printf("Unknown operation: %s\n", op);
-        } 
+        }
     }
 
     fclose(ops_file);
